@@ -2,7 +2,9 @@
 
 ## Checklist
 
-- [ ] 1. Scaffold the Electron project, package.json, run script, README
+- [x] 1. Scaffold the Electron project, package.json, run script, README
+  - Added the Electron 31 project manifest, `npm start`/`npm test` scripts, lockfile, ignore rules, and initial usage docs.
+  - Verified `npm install` and `npm test`; Electron binary was installed locally for runtime verification.
 - [ ] 2. Frameless transparent window with custom title bar and drag
 - [ ] 3. Always-on-top overlay behavior + not stealing focus
 - [ ] 4. Opacity slider + readable-text styling at low opacity
