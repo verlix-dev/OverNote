@@ -1,4 +1,4 @@
-const { app, BrowserWindow, globalShortcut, ipcMain, clipboard, protocol, dialog, shell, Menu, Tray, net } = require('electron');
+const { app, BrowserWindow, globalShortcut, ipcMain, clipboard, protocol, dialog, shell, Menu, Tray, net, screen } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
@@ -28,6 +28,9 @@ let notesFile;
 let settingsFile;
 let imagesDir;
 let settings;
+const hasSingleInstance = app.requestSingleInstanceLock();
+
+if (!hasSingleInstance) app.quit();
 
 function ensureDataFiles() {
   dataDir = app.getPath('userData');
@@ -116,7 +119,12 @@ function changeOpacity(delta) {
 
 function createTray() {
   const iconPath = path.join(__dirname, 'assets', 'tray.png');
-  tray = new Tray(iconPath);
+  try {
+    tray = new Tray(iconPath);
+  } catch (error) {
+    console.warn('System tray is unavailable:', error.message);
+    return;
+  }
   tray.setToolTip('OVERNOTE');
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Show OVERNOTE', click: showWindow },
@@ -129,9 +137,11 @@ function createTray() {
 
 function createWindow() {
   const saved = settings.window || defaultSettings.window;
+  const displays = screen.getAllDisplays();
+  const savedPositionIsVisible = Number.isFinite(saved.x) && Number.isFinite(saved.y) && displays.some(({ workArea }) => saved.x < workArea.x + workArea.width - 80 && saved.x + 80 > workArea.x && saved.y < workArea.y + workArea.height - 80 && saved.y + 80 > workArea.y);
   mainWindow = new BrowserWindow({
-    x: Number.isFinite(saved.x) ? saved.x : undefined,
-    y: Number.isFinite(saved.y) ? saved.y : undefined,
+    x: savedPositionIsVisible ? saved.x : undefined,
+    y: savedPositionIsVisible ? saved.y : undefined,
     width: saved.width || 980,
     height: saved.height || 680,
     minWidth: 420,
@@ -167,6 +177,10 @@ function createWindow() {
   mainWindow.webContents.on('did-finish-load', () => {
     applyWindowSettings();
     sendToRenderer('initial-state', { notes: loadNotes().notes, settings });
+  });
+  mainWindow.webContents.on('render-process-gone', (_event, details) => {
+    console.error('OVERNOTE renderer stopped:', details.reason);
+    if (!isQuitting) dialog.showErrorBox('OVERNOTE needs to restart its editor', 'The note window stopped unexpectedly. Please relaunch OVERNOTE.');
   });
   applyWindowSettings();
 }
@@ -207,9 +221,12 @@ function registerIpc() {
   ipcMain.handle('save-clipboard-image', () => {
     const image = clipboard.readImage();
     if (image.isEmpty()) return null;
+    const size = image.getSize();
+    const largestSide = Math.max(size.width, size.height);
+    const imageToSave = largestSide > 4096 ? image.resize({ width: Math.round(size.width * 4096 / largestSide) }) : image;
     const id = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}.png`;
     const target = path.join(imagesDir, id);
-    fs.writeFileSync(target, image.toPNG());
+    fs.writeFileSync(target, imageToSave.toPNG());
     return { filename: id, src: `${APP_SCHEME}://${encodeURIComponent(id)}` };
   });
   ipcMain.handle('open-data-folder', () => shell.openPath(dataDir));
@@ -257,7 +274,7 @@ async function exportNote(payload) {
   return { canceled: false, filePath: choice.filePath };
 }
 
-app.whenReady().then(() => {
+if (hasSingleInstance) app.whenReady().then(() => {
   protocol.handle(APP_SCHEME, async (request) => {
     const filename = decodeURIComponent(new URL(request.url).hostname || new URL(request.url).pathname.replace(/^\//, ''));
     const safeName = path.basename(filename);
@@ -272,6 +289,11 @@ app.whenReady().then(() => {
   registerHotkeys();
   showWindow();
 });
+
+if (hasSingleInstance) {
+  app.on('second-instance', () => showWindow());
+  app.on('window-all-closed', (event) => event.preventDefault());
+}
 
 app.on('will-quit', () => {
   saveWindowState();

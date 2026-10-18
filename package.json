@@ -37,7 +37,8 @@
       "target": [
         "nsis"
       ],
-      "icon": "assets/overnote.svg"
+      "icon": "assets/overnote.ico",
+      "signAndEditExecutable": false
     },
     "nsis": {
       "oneClick": false,

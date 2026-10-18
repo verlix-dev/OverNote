@@ -31,8 +31,11 @@
   - Export opens a save dialog, converts formatting to Markdown, and copies referenced images to an export folder.
 - [x] 14. Collapse/pill mode + light/dark theme
   - Collapse hides the workspace to a compact pill; theme and collapsed state survive restart.
-- [ ] 15. Polish: icon, error handling, edge cases (empty state, huge images, multi-monitor), final README with usage and hotkeys
+- [x] 15. Polish: icon, error handling, edge cases (empty state, huge images, multi-monitor), final README with usage and hotkeys
+  - Added branded PNG/SVG/ICO assets, single-instance behavior, tray fallback, renderer crash reporting, empty-state handling, oversized-image limits, and off-screen window recovery.
+  - Expanded README with complete usage, controls, privacy, data, and packaging instructions; `npm test` and a 12-second `npm start` smoke test pass without application errors.
 - [ ] 16. Package an installer (electron-builder) for Windows
+  - Electron-builder packaged the Windows app payload and downloaded NSIS tooling, but installer creation is blocked in this Linux workspace because Wine is unavailable. Run `npm run dist` on Windows or a Linux host with Wine.
 
 ## Check log
 
