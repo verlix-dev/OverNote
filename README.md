@@ -71,16 +71,32 @@ Windows, Linux, and macOS.
 OVERNOTE keeps its JSON note database and pasted image files in Electron's
 standard `userData` directory. Use the Settings panel to open that folder.
 
-## Packaging
+## Building the Windows installer
 
-The Windows NSIS configuration is included in `package.json`:
+The Windows NSIS configuration is included in `package.json` with the OVERNOTE
+app ID, product name, branded icon, and a configurable installation directory.
+Build the installer on a Windows machine:
 
-```bash
-npm run dist
-```
+1. Install Node.js 18 or newer.
+2. Check out this project and open a terminal in the project folder.
+3. Install the pinned dependencies:
 
-This creates `OVERNOTE-<version>-Setup.exe` in `dist/`. Build on Windows for
-the most reliable Windows signing and installer behavior.
+   ```powershell
+   npm install
+   ```
+
+4. Build the installer:
+
+   ```powershell
+   npm run dist
+   ```
+
+5. Find `OVERNOTE-1.0.0-Setup.exe` (or the current version) in `dist/` and
+   run it to install OVERNOTE. The installer creates a desktop shortcut and
+   allows the installation directory to be changed.
+
+The `dist` script is intentionally `electron-builder --win`. A Windows build
+host is recommended; Linux builds need Wine for the NSIS step.
 
 ## Privacy
 

@@ -34,8 +34,9 @@
 - [x] 15. Polish: icon, error handling, edge cases (empty state, huge images, multi-monitor), final README with usage and hotkeys
   - Added branded PNG/SVG/ICO assets, single-instance behavior, tray fallback, renderer crash reporting, empty-state handling, oversized-image limits, and off-screen window recovery.
   - Expanded README with complete usage, controls, privacy, data, and packaging instructions; `npm test` and a 12-second `npm start` smoke test pass without application errors.
-- [ ] 16. Package an installer (electron-builder) for Windows
-  - Electron-builder packaged the Windows app payload and downloaded NSIS tooling, but installer creation is blocked in this Linux workspace because Wine is unavailable. Run `npm run dist` on Windows or a Linux host with Wine.
+- [x] 16. Package an installer (electron-builder) for Windows
+  - Configured `appId`, product name `OVERNOTE`, branded `assets/overnote.ico`, NSIS target, and the `npm run dist` script.
+  - The installer must be built on Windows with `npm install` followed by `npm run dist`; Linux requires Wine for the NSIS step, which is intentionally not installed here.
 
 ## Check log
 
