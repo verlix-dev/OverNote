@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: overnote-image:; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+    <meta name="color-scheme" content="dark light" />
+    <title>OVERNOTE</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="window-shell" id="windowShell">
+      <header class="titlebar">
+        <div class="brand" aria-label="OVERNOTE">
+          <span class="brand-mark">O</span>
+          <span>OVERN<span>O</span>TE</span>
+          <span class="status-dot" id="saveStatus" title="Saved"></span>
+        </div>
+        <div class="title-actions">
+          <span class="mode-indicator" id="modeIndicator">Interactive</span>
+          <button class="title-button" id="collapseButton" title="Collapse OVERNOTE">−</button>
+          <button class="title-button" id="settingsButton" title="Settings">⚙</button>
+          <button class="title-button close-button" id="closeButton" title="Hide to tray">×</button>
+        </div>
+      </header>
+
+      <div class="app-layout" id="appLayout">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-heading">
+            <div>
+              <p class="eyebrow">YOUR SPACE</p>
+              <h1>Notes</h1>
+            </div>
+            <button class="icon-button accent" id="newNoteButton" title="New note">+</button>
+          </div>
+          <label class="search-box">
+            <span>⌕</span>
+            <input id="searchInput" type="search" placeholder="Search notes" autocomplete="off" />
+          </label>
+          <div class="note-list" id="noteList" aria-label="Notes"></div>
+          <div class="sidebar-footer">
+            <span id="noteCount">0 notes</span>
+            <button class="text-button" id="exportButton">Export</button>
+          </div>
+        </aside>
+
+        <main class="editor-pane" id="editorPane">
+          <div class="editor-heading">
+            <input id="noteTitle" class="note-title" value="" placeholder="Untitled note" aria-label="Note title" />
+            <div class="editor-actions">
+              <button class="icon-button" id="pinButton" title="Pin note">☆</button>
+              <button class="icon-button danger" id="deleteButton" title="Delete note">⌫</button>
+            </div>
+          </div>
+          <div class="format-toolbar" role="toolbar" aria-label="Formatting">
+            <button data-command="bold" title="Bold"><strong>B</strong></button>
+            <button data-command="insertUnorderedList" title="Bullet list">•≡</button>
+            <button id="checkboxButton" title="Insert checkbox">☑</button>
+            <span class="toolbar-divider"></span>
+            <button id="imageButton" title="Paste image from clipboard">▧ Image</button>
+            <span class="toolbar-hint">Paste screenshots directly</span>
+          </div>
+          <div class="editor-wrap">
+            <div class="editor" id="editor" contenteditable="true" data-placeholder="Start writing… Paste a screenshot or use the toolbar to format your note."></div>
+          </div>
+          <div class="editor-footer">
+            <span id="wordCount">0 words</span>
+            <span>Stored locally · <kbd>Ctrl</kbd> <kbd>S</kbd> to save</span>
+          </div>
+        </main>
+      </div>
+
+      <section class="settings-panel" id="settingsPanel" aria-hidden="true">
+        <div class="settings-heading">
+          <div><p class="eyebrow">PREFERENCES</p><h2>Settings</h2></div>
+          <button class="icon-button" id="closeSettingsButton" title="Close settings">×</button>
+        </div>
+        <div class="settings-scroll">
+          <label class="setting-row range-row">
+            <span><strong>Panel opacity</strong><small>Background transparency, text remains crisp</small></span>
+            <span class="range-value"><input id="opacityRange" type="range" min="20" max="100" value="70" step="5" /><output id="opacityValue">70%</output></span>
+          </label>
+          <label class="setting-row toggle-row"><span><strong>Light theme</strong><small>Use a bright paper-like surface</small></span><input id="themeToggle" type="checkbox" /></label>
+          <label class="setting-row toggle-row"><span><strong>Start collapsed</strong><small>Remember the compact pill mode</small></span><input id="collapsedToggle" type="checkbox" /></label>
+          <div class="settings-section"><p class="eyebrow">GLOBAL HOTKEYS</p>
+            <label class="hotkey-row"><span>Show / hide</span><input data-hotkey="toggleVisibility" value="Ctrl+Shift+Space" /></label>
+            <label class="hotkey-row"><span>Click-through</span><input data-hotkey="clickThrough" value="Ctrl+Shift+T" /></label>
+            <label class="hotkey-row"><span>Raise opacity</span><input data-hotkey="increaseOpacity" value="Ctrl+Shift+Up" /></label>
+            <label class="hotkey-row"><span>Lower opacity</span><input data-hotkey="decreaseOpacity" value="Ctrl+Shift+Down" /></label>
+            <small class="settings-help">Use Electron accelerator names, for example <code>CommandOrControl+Shift+Space</code>.</small>
+          </div>
+          <button class="wide-button" id="openDataButton">Open local data folder</button>
+          <p class="privacy-note">Your notes never leave this computer. Images are saved next to your local note database.</p>
+        </div>
+      </section>
+      <div class="image-lightbox" id="imageLightbox" aria-hidden="true"><img id="lightboxImage" alt="Expanded note image" /><button id="closeLightbox">×</button></div>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
