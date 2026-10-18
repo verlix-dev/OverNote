@@ -1,0 +1,52 @@
+{
+  "name": "overnote",
+  "productName": "OVERNOTE",
+  "version": "1.0.0",
+  "description": "A private, always-on-top desktop notepad for capturing thoughts without Alt+Tab.",
+  "main": "main.js",
+  "author": "OVERNOTE",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "node --check main.js && node --check preload.js && node --check renderer/app.js",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.overnote.app",
+    "productName": "OVERNOTE",
+    "artifactName": "OVERNOTE-${version}-Setup.${ext}",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "assets/**/*",
+      "package.json",
+      "README.md"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/overnote.svg"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "OVERNOTE"
+    }
+  },
+  "allowScripts": {
+    "electron@31.7.7": true
+  }
+}
